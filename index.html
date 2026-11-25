@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تفقيط الأرقام: حوّل الرقم إلى كلمات عربية | أداة مجانية</title>
+<meta name="description" content="حوّل أي رقم إلى كلمات عربية (تفقيط) للشيكات والفواتير والعقود، حتى مئات المليارات، مع صيغة «فقط ... جنيهًا مصريًا لا غير». دون إرسال بيانات.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Tahoma,'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:#1e293b;line-height:1.7;min-height:100vh;display:flex;flex-direction:column}
+header{background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;padding:1.6rem 1rem;text-align:center}
+header h1{font-size:1.5rem}
+.tagline{opacity:.92;font-size:.95rem;margin-top:.25rem}
+main{flex:1;width:100%;max-width:560px;margin:0 auto;padding:1rem}
+.card{background:#fff;border-radius:14px;padding:1.25rem;box-shadow:0 1px 4px rgba(15,23,42,.08);margin-bottom:1rem}
+.card h2{font-size:1.1rem;margin-bottom:.4rem;color:#0f766e}
+label{display:block;font-weight:700;margin:.75rem 0 .3rem}
+input,select,textarea{width:100%;padding:.7rem .8rem;border:1.5px solid #cbd5e1;border-radius:10px;font-size:1rem;font-family:inherit;background:#fff;color:#1e293b}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#0f766e;box-shadow:0 0 0 3px rgba(20,184,166,.18)}
+.row{display:flex;gap:.6rem}
+.row>*{flex:1;min-width:0}
+button{display:inline-block;width:100%;padding:.8rem;border:0;border-radius:10px;background:#0f766e;color:#fff;font-size:1.05rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:1rem}
+button:hover{background:#115e59}
+button.ghost{background:#e2e8f0;color:#1e293b}
+.result{background:#ecfdf5;border:1.5px solid #6ee7b7;border-radius:10px;padding:1rem;margin-top:1rem;font-size:1.05rem;word-break:break-word}
+.result b{color:#047857}
+.result.warn{background:#fffbeb;border-color:#fcd34d}
+.result.warn b{color:#b45309}
+.result.bad{background:#fef2f2;border-color:#fca5a5}
+.result.bad b{color:#b91c1c}
+.muted{color:#64748b;font-size:.85rem}
+footer{background:#0f172a;color:#94a3b8;text-align:center;padding:1.2rem 1rem;font-size:.85rem;line-height:1.9}
+footer a{color:#5eead4}
+table{width:100%;border-collapse:collapse;margin-top:.5rem}
+th,td{padding:.5rem;border-bottom:1px solid #e2e8f0;text-align:right;font-size:.95rem}
+.big{font-size:1.6rem;font-weight:800}
+.hidden{display:none}
+.chk{display:flex;align-items:center;gap:.5rem;margin:.3rem 0}
+.chk input{width:auto}
+
+</style>
+</head>
+<body>
+<header>
+<h1>تفقيط الأرقام</h1>
+<p class="tagline">اكتب الرقم بالحروف العربية للشيكات والفواتير والعقود</p>
+</header>
+<main>
+<div class="card">
+<h2>الرقم</h2>
+<label for="num">اكتب الرقم (حتى ١٢ خانة)</label>
+<input type="number" inputmode="numeric" id="num" min="0" max="999999999999" placeholder="مثال: 1250">
+<label class="chk"><input type="checkbox" id="cur"> صيغة مستندات مالية: «فقط ... جنيهًا مصريًا لا غير»</label>
+<button onclick="calc()">فقّط الرقم</button>
+<button class="ghost" onclick="copyRes()">انسخ النتيجة</button>
+</div>
+<div id="out" class="result hidden"></div>
+
+</main>
+<footer>
+<p>تعمل هذه الأداة بالكامل على جهازك، ولا تُحفظ أو تُرسل أي بيانات إلى أي خادم.</p>
+<p>أداة مجانية مفتوحة المصدر · بُنيت بمساعدة أدوات ذكاء اصطناعي · <a href="https://github.com/abood-ayman/tafqit-ar">الكود على GitHub</a></p>
+</footer>
+<script>
+window.__jserrors=[];window.addEventListener('error',function(e){window.__jserrors.push(String(e.message))});
+const g = id => document.getElementById(id);
+
+const ONES = ['صفر', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة', 'عشرة', 'أحد عشر', 'اثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 'ثمانية عشر', 'تسعة عشر'];
+const TENS = ['', 'عشرة', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
+const HUND = ['', 'مائة', 'مائتان', 'ثلاثمائة', 'أربعمائة', 'خمسمائة', 'ستمائة', 'سبعمائة', 'ثمانمائة', 'تسعمائة'];
+const SCALES = [['', '', ''], ['ألف', 'ألفان', 'آلاف'], ['مليون', 'مليونان', 'ملايين'], ['مليار', 'ملياران', 'مليارات']];
+
+function three(n) {
+  const parts = [];
+  const h = Math.floor(n / 100), r = n % 100;
+  if (h) parts.push(HUND[h]);
+  if (r) {
+    if (r < 20) parts.push(ONES[r]);
+    else {
+      const u = r % 10, t = Math.floor(r / 10);
+      parts.push(u ? ONES[u] + ' و' + TENS[t] : TENS[t]);
+    }
+  }
+  return parts.join(' و');
+}
+
+function scaleWords(v, s) {
+  const [sg, du, pl] = SCALES[s];
+  if (v === 1) return sg;
+  if (v === 2) return du;
+  if (v <= 10) return three(v) + ' ' + pl;
+  return three(v) + ' ' + sg;
+}
+
+function tafqit(input) {
+  let num = Math.floor(Math.abs(Number(input)));
+  if (!isFinite(num)) return '';
+  if (num === 0) return 'صفر';
+  if (num > 999999999999) return '';
+  const groups = [];
+  while (num > 0) { groups.push(num % 1000); num = Math.floor(num / 1000); }
+  const parts = [];
+  for (let s = groups.length - 1; s >= 0; s--) {
+    const v = groups[s];
+    if (!v) continue;
+    parts.push(s === 0 ? three(v) : scaleWords(v, s));
+  }
+  return parts.join(' و');
+}
+
+let last = '';
+function calc() {
+  const v = g('num').value;
+  const el = g('out');
+  el.classList.remove('hidden', 'warn');
+  const words = tafqit(v);
+  if (!words) { el.classList.add('warn'); el.innerHTML = '<p>أدخل رقمًا صحيحًا حتى ١٢ خانة.</p>'; last = ''; return; }
+  last = g('cur').checked ? 'فقط ' + words + ' جنيهًا مصريًا لا غير' : words;
+  el.innerHTML = '<p class="big"><b>' + last + '</b></p>';
+}
+function copyRes() {
+  if (!last) return;
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(last);
+}
+
+window.__test = function () {
+  const cases = {
+    '0': 'صفر', '3': 'ثلاثة', '15': 'خمسة عشر', '21': 'واحد وعشرون', '100': 'مائة',
+    '200': 'مائتان', '999': 'تسعمائة وتسعة وتسعون', '1000': 'ألف', '1250': 'ألف ومائتان وخمسون',
+    '2000': 'ألفان', '5000': 'خمسة آلاف', '15000': 'خمسة عشر ألف', '1000000': 'مليون',
+    '2000000': 'مليونان', '1000000000': 'مليار', '1234': 'ألف ومائتان وأربعة وثلاثون', '1002': 'ألف واثنان'
+  };
+  const bad = Object.entries(cases).filter(([k, v]) => tafqit(k) !== v);
+  return { pass: bad.length === 0, details: { failed: bad } };
+};
+
+window.__demo = function () {
+  g('num').value = 45750; g('cur').checked = true;
+  calc();
+};
+
+</script>
+</body>
+</html>
