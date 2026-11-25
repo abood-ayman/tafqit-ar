@@ -4,6 +4,8 @@ Convert any number into Arabic words (tafqit) for checks, invoices and contracts
 
 **Live app:** https://abood-ayman.github.io/tafqit-ar/
 
+**LinkedIn:** [Project entry](https://www.linkedin.com/in/abdullah-ayman-1678b737b/details/projects/)
+
 ![Arabic Number to Words (Tafqit), mobile view](docs/screenshot.svg)
 
 This is a personal project, built with AI tools.
