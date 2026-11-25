@@ -1,28 +1,27 @@
-# تفقيط الأرقام
+# Arabic Number to Words (Tafqit) | تفقيط الأرقام
 
-اكتب الرقم بالحروف العربية للشيكات والفواتير والعقود
+Convert any number into Arabic words (tafqit) for checks, invoices and contracts, up to hundreds of billions. Arabic interface.
 
-**رابط الأداة (تعمل فورًا من المتصفح):** https://abood-ayman.github.io/tafqit-ar/
+**Live app:** https://abood-ayman.github.io/tafqit-ar/
 
-## ما الذي تقدمه؟
+![Arabic Number to Words (Tafqit), mobile view](docs/screenshot.svg)
 
-- يحوّل الأرقام حتى ٩٩٩ مليار إلى حروف عربية صحيحة التركيب
-- صيغة جاهزة للمستندات المالية: «فقط ... جنيهًا مصريًا لا غير»
-- زر نسخ فوري للنتيجة
-- يعالج المثنى والجمع ومركبات العشرات والمئات تلقائيًا
+This is a personal project, built with AI tools.
 
-## الخصوصية
+## Features
+- Converts numbers up to 999 billion into grammatically correct Arabic words
+- Ready-made financial wording: 'Only ... Egyptian pounds, no more'
+- One-click copy of the result
+- Handles dual, plural and tens/hundreds compounds automatically
 
-تعمل الأداة بالكامل داخل متصفحك (HTML/CSS/JavaScript فقط). لا يوجد خادم، ولا حسابات، ولا تتبّع، ولا تُرسل أو تُحفظ أي بيانات تدخلها خارج جهازك.
+## Privacy
+Everything runs in your browser. No data is stored or sent anywhere.
 
-## التقنية
+## Run locally
+Open `index.html` in any browser. It is a single static page with no dependencies.
 
-صفحة ثابتة واحدة بلا أي مكتبات خارجية، تعمل على الهاتف والحاسوب، وتُستضاف مجانًا عبر GitHub Pages.
+## Status
+Stable.
 
-## ملاحظة شفافية
-
-بُنيت هذه الأداة بمساعدة أدوات ذكاء اصطناعي، ورُوعيَت بساطتها وفائدتها المباشرة.
-
-## الرخصة
-
-MIT — انظر ملف LICENSE.
+## Copyright
+MIT License - Copyright (c) 2026 Abdullah Ayman.
